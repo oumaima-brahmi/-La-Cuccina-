@@ -1,0 +1,20 @@
+{% extends 'baseBack.html.twig' %}
+
+{% block title %}New Ingredient{% endblock %}
+
+{% block content %}
+<style>
+.text-right {
+    text-align: right;
+    margin-right: 1000px; /* Adjust margin as needed */
+    margin-top: -28px; /* Adjust margin-top to move the button up */
+}
+</style>
+    <h1>Create new Ingredient</h1>
+
+    {{ include('ingredient/_form.html.twig') }}
+
+    <div class="text-right"> <!-- Aligns content to the right -->
+        <a href="{{ path('app_ingredient_index') }}"class="btn btn-inverse-warning">Back to list</a>
+    </div>
+{% endblock %}

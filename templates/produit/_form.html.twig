@@ -1,0 +1,56 @@
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+
+
+<div class="form-group">
+        {{ form_label(form.nom) }}
+        {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+         <span style="color:red;">{{ form_errors(form.nom)}}</span>
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.description) }}
+        {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+         <span style="color:red;">{{ form_errors(form.description)}}</span>
+    </div>
+    
+    <div class="form-group">
+        {{ form_label(form.image) }}
+        {{ form_widget(form.image, {'attr': {'class': 'form-control'}}) }}
+         <span style="color:red;">{{ form_errors(form.image)}}</span>
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.prix) }}
+        {{ form_widget(form.prix, {'attr': {'class': 'form-control'}}) }}
+    <span style="color:red;">{{ form_errors(form.prix)}}</span>
+    </div>
+     <div class="form-group">
+        {{ form_label(form.categorie) }}
+        {{ form_widget(form.categorie, {'attr': {'class': 'form-control'}}) }}
+    <span style="color:red;">{{ form_errors(form.categorie)}}</span>
+    </div>
+  
+     
+
+   
+
+    <button type="submit" class="btn btn-inverse-success btn-fw">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}
+
+<style>
+    .form-container {
+        max-width: 500px;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+</style>
+
+

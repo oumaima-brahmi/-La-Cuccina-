@@ -1,0 +1,260 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+    <style>
+        .star {
+            font-size: 24px; /* Adjust the font size to make the stars bigger */
+            color: gold; /* Set the color to yellow */
+        }
+
+        .filled {
+            color: gold; /* Set the color to yellow for filled stars */
+        }
+        .rating .star {
+    font-size: 24px;
+    color: #ccc; /* Default color for empty stars */
+}
+
+.rating[data-rate="1"] .star:nth-child(-n+1),
+.rating[data-rate="2"] .star:nth-child(-n+2),
+.rating[data-rate="3"] .star:nth-child(-n+3),
+.rating[data-rate="4"] .star:nth-child(-n+4),
+.rating[data-rate="5"] .star:nth-child(-n+5) {
+    color: gold; /* Color for filled stars */
+}
+.addIngredientsBtn {
+        position: absolute; /* Positionnement absolu pour fixer le bouton */
+        bottom: 10px; /* Espacement par rapport au bas */
+        right: 10px; /* Espacement par rapport à la droite */
+    }
+    .card {
+        transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+    }
+    body {
+            margin: 0;
+            padding: 0;
+            background: ;
+            height: 100vh;
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            flex-direction: column;
+            align-content: center;
+        }
+
+        .box {
+            position: relative;
+        }
+
+        .input {
+            padding: 10px;
+            width: 80px;
+            height: 80px;
+            background: none;
+            border: 4px solid #FEA116;
+            border-radius: 50px;
+            box-sizing: border-box;
+            font-family: Comic Sans MS;
+            font-size: 26px;
+            color: #222831;
+            outline: none;
+            transition: .5s;
+        }
+
+        .box:hover input {
+            width: 350px;
+            background:;
+            border-radius: 10px;
+        }
+
+        .box i {
+            position: absolute;
+            top: 50%;
+            right: 634px;
+            transform: translate(-50%, -50%);
+            font-size: 26px;
+            color: #FEA116;
+            transition: .2s;
+        }
+
+        .box:hover i {
+            opacity: 0;
+            z-index: -1;
+        }
+    </style>
+
+    <!-- Search bar -->
+     <center>
+        <div class="box">
+            <form method="POST" action="{{ path('app_produit_search', {'categorie': categorie}) }}" name="search">
+                <input type="text" id="searchInput" name="search" class="input" onmouseout="this.value = ''; this.blur();" placeholder="">
+            </form>
+            <i class="fas fa-search"></i>
+        </div>
+    </center>
+    <br>
+    <br>
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        {% if produits is not empty %}
+            {% for product in produits %}
+                <div class="col">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="row g-0">
+                            <div class="col-md-4">
+                                <img src="{{ asset(product.image) }}" class="img-fluid rounded-start" alt="Product Image">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ product.nom }}</h5>
+                                    <p class="card-text">{{ product.description }}</p>
+                                    <p class="card-text"><strong>Base Price:</strong> <span class="basePrice" data-index="{{ product.id }}">{{ product.prix }}</span> DT </p>
+                                    <!-- Display Selected Ingredients and Total Price -->
+                                    <h6>Selected Ingredients:</h6>
+                                    <ul data-index="{{ product.id }}" class="selectedIngredients"></ul>
+                                    <div><strong>Total Price:</strong> <span class="totalPrice" data-index="{{ product.id }}">{{ product.prix }}</span> DT </div>
+                                    <!-- Rating System -->
+                                    <div class="rating" data-product="{{ product.id }}">
+                                        {% set rating = product.note %}
+                                        {% for i in range(1, 5) %}
+                                            {% if rating >= i %}
+                                                <span class="star filled" data-rate="{{ i }}">&#9733;</span> <!-- Full star -->
+                                            {% else %}
+                                                <span class="star" data-rate="{{ i }}">&#9734;</span> <!-- Empty star -->
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn btn-primary addIngredientsBtn" data-bs-toggle="modal" data-bs-target="#exampleModal{{ product.id }}">
+                                    <span aria-hidden="true">+</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal{{ product.id }}" tabindex="-1" aria-labelledby="exampleModalLabel{{ product.id }}" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel{{ product.id }}">Select Ingredients:</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row row-cols-1 row-cols-md-3 g-4">
+                                    {% for ingredient in ingredients %}
+                                        <div class="col">
+                                            <div class="card h-100">
+                                                <img src="{{ asset(ingredient.image) }}" class="card-img-top" alt="{{ ingredient.nom }}">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">{{ ingredient.nom }}</h5>
+                                                    <p class="card-text"><strong>Price:</strong> {{ ingredient.prix }} DT </p>
+                                                </div>
+                                                <div class="card-footer">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input ingredient-checkbox" type="checkbox" data-id="{{ ingredient.id }}" data-name="{{ ingredient.nom }}" data-price="{{ ingredient.prix }}" data-product="{{ product.id }}">
+                                                        <label class="form-check-label">Add</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary addIngredientsBtnModal" data-product="{{ product.id }}">Add</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No products found</p>
+        {% endif %}
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const addIngredientsButtons = document.querySelectorAll(".addIngredientsBtn");
+
+            addIngredientsButtons.forEach(function(button) {
+                button.addEventListener("click", function() {
+                    // No need to add code here, as the modal will be handled separately
+                });
+            });
+
+            const addIngredientsButtonsModal = document.querySelectorAll(".addIngredientsBtnModal");
+
+            addIngredientsButtonsModal.forEach(function(button) {
+                button.addEventListener("click", function() {
+                    const index = button.dataset.product;
+                    const basePriceElement = document.querySelector(`.basePrice[data-index="${index}"]`);
+                    const totalPriceElement = document.querySelector(`.totalPrice[data-index="${index}"]`);
+                    const selectedIngredientsDisplay = document.querySelector(`.selectedIngredients[data-index="${index}"]`);
+
+                    const basePrice = parseFloat(basePriceElement.textContent);
+                    let totalPrice = basePrice;
+                    const selectedIngredients = {};
+
+                    const ingredientCheckboxes = document.querySelectorAll(`.ingredient-checkbox[data-product="${index}"]:checked`);
+
+                    ingredientCheckboxes.forEach(function(checkbox) {
+                        const ingredientId = checkbox.dataset.id;
+                        const ingredientName = checkbox.dataset.name;
+                        const ingredientPrice = parseFloat(checkbox.dataset.price);
+
+                        selectedIngredients[ingredientId] = { name: ingredientName, price: ingredientPrice };
+                        totalPrice += ingredientPrice;
+                    });
+
+                    // Clear the previous content for this specific product
+                    selectedIngredientsDisplay.innerHTML = "";
+
+                    // Append the selected ingredients for this specific product
+                    for (const ingredientId in selectedIngredients) {
+                        const ingredient = selectedIngredients[ingredientId];
+                        const li = document.createElement("li");
+                        li.textContent = `${ingredient.name} - ${ingredient.price} DT`;
+                        selectedIngredientsDisplay.appendChild(li);
+                    }
+
+                    // Update total price for this specific product
+                    totalPriceElement.textContent = totalPrice.toFixed(3);
+
+                    // Close the modal
+                    $('#exampleModal' + index).modal('hide');
+                });
+            });
+
+           const ratingStars = document.querySelectorAll(".rating .star");
+
+    ratingStars.forEach(function(star) {
+    star.addEventListener("click", function() {
+        const rate = parseInt(star.dataset.rate);
+        const productId = star.parentElement.dataset.product;
+
+        const ratingContainer = star.parentElement;
+        ratingContainer.dataset.rate = rate; // Update data-rate attribute
+
+        // Store the product ID in session
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "{{ path('store_product_in_session') }}", true);
+        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                // No need to update the UI here
+            }
+        };
+        xhr.send(JSON.stringify({ productId: productId, rate: rate }));
+    });
+});
+
+        });
+    </script>
+{% endblock %}

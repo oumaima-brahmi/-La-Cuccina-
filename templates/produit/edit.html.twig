@@ -1,0 +1,22 @@
+{% extends 'baseBack.html.twig' %}
+
+{% block title %}Edit Produit{% endblock %}
+
+{% block content %}
+<style>
+.text-right {
+    text-align: right;
+    margin-right: 800px; /* Adjust margin as needed */
+    margin-top: -28px; /* Adjust margin-top to move the button up */
+}
+</style>
+    <h1>Edit Produit</h1>
+
+    {{ include('produit/_form.html.twig', {'button_label': 'Update'}) }}
+
+     <div class="text-right"> <!-- Aligns content to the right -->
+        <a href="{{ path('app_produit_index') }}" class="btn btn-inverse-warning btn-fw">Back to list</a>
+    </div>
+
+    
+{% endblock %}
